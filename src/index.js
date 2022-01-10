@@ -1,9 +1,6 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
-import PhotoApiService from './fetchCountries';
-
-// const options = {};
-// const DEBOUNCE_DELAY = 300;
+import PhotoApiService from './photo-service';
 
 const refs = {
   searchForm: document.querySelector('#search-form'),
@@ -25,8 +22,9 @@ refs.btnLoadMore.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
   e.preventDefault();
-
+  clearCardContainer();
   photoApiService.value = e.currentTarget.elements.searchQuery.value;
+  photoApiService.resetPage();
   // const BASE_URL = 'https://pixabay.com/api/';
   // const keyAPI = 'key=25171903-77720667295a00af61497589c';
   // return fetch(
@@ -35,13 +33,45 @@ function onSearch(e) {
   //   .then(response => response.json())
   //   .then(console.log);
 
-  photoApiService.fetchArticles();
+  photoApiService.fetchArticles().then(appendHitsMarkup);
 }
 
 function onLoadMore() {
-  photoApiService.fetchArticles();
+  photoApiService.fetchArticles().then(appendHitsMarkup);
 }
 
+// return countrys
+//       .map(({ name, capital, population, flags, languages }) => {
+//         return
+function appendHitsMarkup(hits) {
+  return hits
+    .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
+      return refs.cardContainer.insertAdjacentHTML(
+        'beforeend',
+        `<div class="photo-card">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item">
+      <b>Likes${likes}</b>
+    </p>
+    <p class="info-item">
+      <b>Views${views}</b>
+    </p>
+    <p class="info-item">
+      <b>Comments${comments}</b>
+    </p>
+    <p class="info-item">
+      <b>Downloads${downloads}</b>
+    </p>
+  </div>
+</div>`,
+      );
+    })
+    .join('');
+}
+function clearCardContainer() {
+  refs.cardContainer.innerHTML = '';
+}
 // let maxCountry = 10;
 // refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
