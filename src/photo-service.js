@@ -10,7 +10,7 @@ export default class PhotoApiService {
     const keyAPI = 'key=25171903-77720667295a00af61497589c';
 
     return fetch(
-      `${BASE_URL}?${keyAPI}&q=${this.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=5&page=${this.page}`,
+      `${BASE_URL}?${keyAPI}&q=${this.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=4&page=${this.page}`,
     )
       .then(response => response.json())
       .then(data => {

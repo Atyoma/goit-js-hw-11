@@ -24,54 +24,85 @@ function onSearch(e) {
   e.preventDefault();
   clearCardContainer();
   photoApiService.value = e.currentTarget.elements.searchQuery.value;
+  if (photoApiService.value.trim() === '') {
+    return Notiflix.Notify.failure('Так мы ничего не найдём, нужно что-то ввести!');
+  }
+  onShowBtn();
+  onBtnDisabled();
   photoApiService.resetPage();
-  // const BASE_URL = 'https://pixabay.com/api/';
-  // const keyAPI = 'key=25171903-77720667295a00af61497589c';
-  // return fetch(
-  //   `${BASE_URL}?${keyAPI}&q=${value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=1`,
-  // )
-  //   .then(response => response.json())
-  //   .then(console.log);
-
   photoApiService.fetchArticles().then(appendHitsMarkup);
+  onBtnEnabled();
+  // onHideBtn();
 }
 
 function onLoadMore() {
-  photoApiService.fetchArticles().then(appendHitsMarkup);
+  onBtnDisabled();
+  photoApiService.fetchArticles().then(hits => {
+    appendHitsMarkup(hits);
+    onBtnEnabled();
+  });
 }
 
-// return countrys
-//       .map(({ name, capital, population, flags, languages }) => {
-//         return
 function appendHitsMarkup(hits) {
   return hits
     .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
       return refs.cardContainer.insertAdjacentHTML(
         'beforeend',
-        `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
-  <div class="info">
-    <p class="info-item">
-      <b>Likes${likes}</b>
+        `<li class="item">
+          <div class="card">
+            <div class="card-thumb">
+              <img src="${webformatURL}" alt="${tags}" loading="lazy"/>
+            </div>
+          <div class="card-content">
+    <p class="card-text">
+      <b>Likes:</b>
+      ${likes}
     </p>
-    <p class="info-item">
-      <b>Views${views}</b>
+    <p class="card-text">
+      <b>Views:</b>
+      ${views}
     </p>
-    <p class="info-item">
-      <b>Comments${comments}</b>
+    <p class="card-text">
+      <b>Comments:</b>
+      ${comments}
     </p>
-    <p class="info-item">
-      <b>Downloads${downloads}</b>
+    <p class="card-text">
+      <b>Downloads:</b>
+      ${downloads}
     </p>
   </div>
-</div>`,
+          </div>
+  </li>`,
       );
     })
     .join('');
 }
+
 function clearCardContainer() {
   refs.cardContainer.innerHTML = '';
 }
+
+function onShowBtn() {
+  refs.btnLoadMore.classList.remove('is-hidden');
+}
+
+function onHideBtn() {
+  refs.btnLoadMore.classList.add('is-hidden');
+}
+
+function onBtnDisabled() {
+  refs.btnLoadMore.disabled = true;
+  refs.btnLoadMore.textContent = 'Loading...';
+  refs.btnLoadMore.style.backgroundColor = '#70b9e8';
+}
+
+function onBtnEnabled() {
+  refs.btnLoadMore.disabled = false;
+  refs.btnLoadMore.textContent = 'Load more';
+  refs.btnLoadMore.style.backgroundColor = '#269ce9';
+}
+// ====================html repeta
+
 // let maxCountry = 10;
 // refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 

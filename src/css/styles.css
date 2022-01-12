@@ -2,6 +2,12 @@
   box-sizing: border-box;
 }
 
+:root {
+  --card-set-gap: 20px;
+  --card-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
     'Open Sans', 'Helvetica Neue', sans-serif;
@@ -12,12 +18,28 @@ body {
   line-height: 1.5;
 }
 
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* forma */
+
 #search-form {
   font: inherit;
   padding: 8px;
   max-width: 320px;
-  margin: auto;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 30px;
 }
+
+/* buttons */
 .search {
   background-color: #269ce9;
   border-color: #269ce9;
@@ -37,8 +59,8 @@ input[name='searchQuery'] {
 }
 
 .load-more {
-  /* display: none; */
   margin: auto;
+  margin-top: 20px;
   padding: 7px;
   display: flex;
   background-color: #269ce9;
@@ -48,6 +70,53 @@ input[name='searchQuery'] {
   text-align: center;
   color: #ffffff;
 }
+
 .load-more:hover {
   background-color: #70b9e8;
+}
+/* card set */
+.container {
+  width: 1200px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* CARD SET */
+.gallery {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: calc(-1 * var(--card-set-gap));
+  margin-top: calc(-1 * var(--card-set-gap));
+}
+
+.gallery > .item {
+  flex-basis: calc(100% / 4 - var(--card-set-gap));
+  margin-left: var(--card-set-gap);
+  margin-top: var(--card-set-gap);
+}
+
+/* CARD */
+.card {
+  box-shadow: var(--card-shadow);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-text {
+  margin-top: 10px;
+}
+
+.is-hidden {
+  display: none;
 }
