@@ -20,6 +20,7 @@ const photoApiService = new PhotoApiService();
 refs.searchForm.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
 
+let arrData = [];
 function onSearch(e) {
   e.preventDefault();
   clearCardContainer();
@@ -27,19 +28,23 @@ function onSearch(e) {
   if (photoApiService.value.trim() === '') {
     return Notiflix.Notify.failure('Так мы ничего не найдём, нужно что-то ввести!');
   }
-  onShowBtn();
-  onBtnDisabled();
+  arrData = photoApiService.gettotalHits();
+  // arrData = photoApiService.fetchArticles();
+  console.log(arrData);
+  // onShowBtn();
+  onHideBtn();
   photoApiService.resetPage();
   photoApiService.fetchArticles().then(appendHitsMarkup);
-  onBtnEnabled();
-  // onHideBtn();
+  // onBtnEnabled();
+  onShowBtn();
 }
+// console.log(photoApiService.data.totalHits);
 
 function onLoadMore() {
-  onBtnDisabled();
+  onHideBtn();
   photoApiService.fetchArticles().then(hits => {
     appendHitsMarkup(hits);
-    onBtnEnabled();
+    onShowBtn();
   });
 }
 
@@ -90,17 +95,20 @@ function onHideBtn() {
   refs.btnLoadMore.classList.add('is-hidden');
 }
 
-function onBtnDisabled() {
-  refs.btnLoadMore.disabled = true;
-  refs.btnLoadMore.textContent = 'Loading...';
-  refs.btnLoadMore.style.backgroundColor = '#70b9e8';
-}
+// function getTotalHitsValue(totalHits) {
+console.log(photoApiService.data);
+// }
+// function onBtnDisabled() {
+//   refs.btnLoadMore.disabled = true;
+//   refs.btnLoadMore.textContent = 'Loading...';
+//   refs.btnLoadMore.style.backgroundColor = '#70b9e8';
+// }
 
-function onBtnEnabled() {
-  refs.btnLoadMore.disabled = false;
-  refs.btnLoadMore.textContent = 'Load more';
-  refs.btnLoadMore.style.backgroundColor = '#269ce9';
-}
+// function onBtnEnabled() {
+//   refs.btnLoadMore.disabled = false;
+//   refs.btnLoadMore.textContent = 'Load more';
+//   refs.btnLoadMore.style.backgroundColor = '#269ce9';
+// }
 // ====================html repeta
 
 // let maxCountry = 10;

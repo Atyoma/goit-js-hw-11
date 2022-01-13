@@ -1,7 +1,10 @@
+let arr = [];
+
 export default class PhotoApiService {
   constructor() {
     this.value = '';
     this.page = 1;
+    this.totalHits = 0;
   }
 
   fetchArticles() {
@@ -15,13 +18,19 @@ export default class PhotoApiService {
       .then(response => response.json())
       .then(data => {
         this.page += 1;
-
+        this.totalHits = data.totalHits;
+        arr = this.totalHits;
+        console.log(data);
         return data.hits;
       });
   }
 
   resetPage() {
     this.page = 1;
+  }
+
+  gettotalHits() {
+    return arr;
   }
 
   get query() {
