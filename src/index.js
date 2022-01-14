@@ -9,42 +9,50 @@ const refs = {
   btnSearch: document.querySelector('.search'),
   btnLoadMore: document.querySelector('.load-more'),
 };
-console.log(refs.searchForm);
-console.log(refs.searchQuery);
-console.log(refs.cardContainer);
-console.log(refs.btnSearch);
-console.log(refs.btnLoadMore);
 
 const photoApiService = new PhotoApiService();
 
 refs.searchForm.addEventListener('submit', onSearch);
 refs.btnLoadMore.addEventListener('click', onLoadMore);
 
-let arrData = [];
 function onSearch(e) {
   e.preventDefault();
   clearCardContainer();
   photoApiService.value = e.currentTarget.elements.searchQuery.value;
   if (photoApiService.value.trim() === '') {
-    return Notiflix.Notify.failure('Так мы ничего не найдём, нужно что-то ввести!');
+    return Notiflix.Notify.failure('Please, enter something');
   }
-  arrData = photoApiService.gettotalHits();
-  // arrData = photoApiService.fetchArticles();
-  console.log(arrData);
+
   // onShowBtn();
   onHideBtn();
   photoApiService.resetPage();
-  photoApiService.fetchArticles().then(appendHitsMarkup);
-  // onBtnEnabled();
-  onShowBtn();
+  photoApiService.fetchHits().then(hits => {
+    appendHitsMarkup(hits);
+    console.log(hits.length);
+    if (hits.length === 0) {
+      Notiflix.Notify.failure(
+        `"Sorry, there are no images matching your search query. Please try again."`,
+      );
+      onHideBtn();
+    } else if (hits.length < 40) {
+      Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
+    } else {
+      onShowBtn();
+    }
+  });
 }
-// console.log(photoApiService.data.totalHits);
 
 function onLoadMore() {
   onHideBtn();
-  photoApiService.fetchArticles().then(hits => {
+  photoApiService.fetchHits().then(hits => {
     appendHitsMarkup(hits);
-    onShowBtn();
+    console.log(hits);
+    if (hits.length < 40) {
+      onHideBtn();
+      Notiflix.Notify.warning("We're sorry, but you've reached the end of search results.");
+    } else {
+      onShowBtn();
+    }
   });
 }
 
@@ -96,7 +104,7 @@ function onHideBtn() {
 }
 
 // function getTotalHitsValue(totalHits) {
-console.log(photoApiService.data);
+
 // }
 // function onBtnDisabled() {
 //   refs.btnLoadMore.disabled = true;

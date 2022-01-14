@@ -1,36 +1,35 @@
-let arr = [];
+import Notiflix from 'notiflix';
+import axios from 'axios';
 
 export default class PhotoApiService {
   constructor() {
     this.value = '';
     this.page = 1;
     this.totalHits = 0;
+    this.perPage = 40;
   }
 
-  fetchArticles() {
-    console.log(this);
-    const BASE_URL = 'https://pixabay.com/api/';
+  fetchHits() {
+    axios.defaults.baseURL = 'https://pixabay.com/api/';
     const keyAPI = 'key=25171903-77720667295a00af61497589c';
 
-    return fetch(
-      `${BASE_URL}?${keyAPI}&q=${this.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=4&page=${this.page}`,
+    return axios(
+      `?${keyAPI}&q=${this.value}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.page}`,
     )
-      .then(response => response.json())
+      .then(response => response.data)
       .then(data => {
-        this.page += 1;
         this.totalHits = data.totalHits;
-        arr = this.totalHits;
-        console.log(data);
+        this.page += 1;
+        if (this.page === 2 && this.totalHits !== 0) {
+          Notiflix.Notify.success(`Hooray! We found ${this.totalHits} images.`);
+        }
+
         return data.hits;
       });
   }
 
   resetPage() {
     this.page = 1;
-  }
-
-  gettotalHits() {
-    return arr;
   }
 
   get query() {
